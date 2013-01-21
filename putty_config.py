@@ -68,8 +68,14 @@ if __name__ == '__main__' :
 	pgrp.add_option('-s','--set',action='store',type='string',
 		dest='set',default=False,help='Set parameter NAME to VALUE',
 		metavar='NAME=VALUE');
+	pgrp.add_option('-d','--dump',action='store_true',
+		dest='dump',default=False,help='Dump session.',
+		metavar='SESSION')
+	pgrp.add_option('-m','--match',action='store',type='string',
+		dest='match',default=None,help='Match (glob) session when dumping.',
+		metavar='PATTERN')
 	parser.add_option_group(pgrp)
-			
+
 	opts,args = parser.parse_args()
 	PC = PuttyConfig()
 
@@ -82,11 +88,25 @@ if __name__ == '__main__' :
 		sessions = filtsess
 	else :
 		print '%d session(s) in total.'%(len(sessions))
-	
+
 	if opts.list :
 		for s in sessions :
 			print '\t%s'%(s)
 		sys.exit(0)
+
+	if opts.dump :
+		if len(sessions) != 1 :
+			print 'You have to specify one session! (list them using -l)'
+			sys.exit(1)
+		print 'Parameter Name       Parameter Value'
+		print '--------------------:----------------------------------------'
+		cfg = PC.get_config(sessions[0])
+		for pn,pv in cfg.iteritems() :
+			if opts.match and not fnmatch.fnmatch(pn,opts.match) :
+				continue
+			print '%-20s %s'%(pn,pv)
+		sys.exit(0)
+
 
 	if opts.get :
 		print ''
