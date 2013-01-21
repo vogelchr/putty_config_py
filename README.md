@@ -36,3 +36,15 @@ Usage:
 		com7_115200         : ok
 	No command given. Maybe you should try --help?
 
+	C:\Users\cvogel\Programs>python putty_config.py -m "*font*" -d "Default*"
+	12 session(s) in total, 1 match filter "Default*".
+	Parameter Name       Parameter Value
+	--------------------:----------------------------------------
+	WideBoldFontHeight   1636784
+	BoldFontHeight       0
+   (...)
+	WideFont
+	BoldFontCharSet      0
+	FontIsBold           0
+
+
