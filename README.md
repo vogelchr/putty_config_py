@@ -42,7 +42,7 @@ Usage:
 	--------------------:----------------------------------------
 	WideBoldFontHeight   1636784
 	BoldFontHeight       0
-   (...)
+	(...)
 	WideFont
 	BoldFontCharSet      0
 	FontIsBold           0
