@@ -1,6 +1,6 @@
 #!python
 
-from _winreg import OpenKey, QueryInfoKey, EnumKey, EnumValue, QueryValueEx, \
+from winreg import OpenKey, QueryInfoKey, EnumKey, EnumValue, QueryValueEx, \
 	SetValueEx, HKEY_CURRENT_USER,KEY_ALL_ACCESS,KEY_READ
 from optparse import OptionParser, OptionGroup
 import fnmatch
@@ -50,10 +50,10 @@ class PuttyConfig :
 			# python type
 			new_val = type(rv_val)(par_value)
 			SetValueEx(sess,par_name,0,rv_type,new_val)
-		except WindowsError,e :
+		except WindowsError as e :
 			if e.winerror == 2 :
 				return False # Key not found.
-			print 'Windows Error: ',e
+			print('Windows Error: ',e)
 			return False
 		return True
 
@@ -83,50 +83,50 @@ if __name__ == '__main__' :
 	sessions = PC.sessions()
 	if len(args) >= 1 :
 		filtsess = [s for s in sessions if fnmatch.fnmatch(s,args[0])]
-		print '%d session(s) in total, %d match filter \"%s\".'%(
-			len(sessions),len(filtsess),args[0])
+		print('%d session(s) in total, %d match filter \"%s\".'%(
+			len(sessions),len(filtsess),args[0]))
 		sessions = filtsess
 	else :
-		print '%d session(s) in total.'%(len(sessions))
+		print('%d session(s) in total.'%(len(sessions)))
 
 	if opts.list :
 		for s in sessions :
-			print '\t%s'%(s)
+			print('\t%s'%(s))
 		sys.exit(0)
 
 	if opts.dump :
 		if len(sessions) != 1 :
-			print 'You have to specify one session! (list them using -l)'
+			print('You have to specify one session! (list them using -l)')
 			sys.exit(1)
-		print 'Parameter Name       Parameter Value'
-		print '--------------------:----------------------------------------'
+		print('Parameter Name       Parameter Value')
+		print('--------------------:----------------------------------------')
 		cfg = PC.get_config(sessions[0])
-		for pn,pv in cfg.iteritems() :
+		for pn,pv in cfg.items() :
 			if opts.match and not fnmatch.fnmatch(pn,opts.match) :
 				continue
-			print '%-20s %s'%(pn,pv)
+			print('%-20s %s'%(pn,pv))
 		sys.exit(0)
 
 
 	if opts.get :
-		print ''
-		print 'Session              Parameter %s'%(opts.get)
-		print '--------------------:----------------------------------------'
+		print('')
+		print('Session              Parameter %s'%(opts.get))
+		print('--------------------:----------------------------------------')
 		for s in sessions :
 			cfg = PC.get_config(s)
 			val = cfg.get(opts.get,'-')
-			print '%-20s %s'%(s,val)
+			print('%-20s %s'%(s,val))
 		sys.exit(0)
 
 	if opts.set :
 		name,val = opts.set.split('=',1)
-		print 'Updating parameter \'%s\' to value \'%s\'.'%(name,val)
+		print('Updating parameter \'%s\' to value \'%s\'.'%(name,val))
 		for s in sessions :
 			res = PC.set_config_value(s,name,val)
 			if res :
-				print '\t%-20s: ok'%(s)
+				print('\t%-20s: ok'%(s))
 			else :
-				print '\t%-20s: not updated'%(s)
+				print('\t%-20s: not updated'%(s))
 		sys.exit(0)
 
-	print 'No command given. Maybe you should try --help?'
+	print('No command given. Maybe you should try --help?')
